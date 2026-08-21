@@ -1,0 +1,26 @@
+name: Java CI with Ant  
+
+on:
+    push:
+        branches: ["main"]
+        pull_request:
+                branches:
+                    ["main"]
+jobs:
+    build:
+        run-on: unbuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          - name: Set up JDK
+            uses: actions/setup-java@v4
+            with:
+                java-version: '26'
+                distibution: 'temurin'
+          - name: Install Ant
+            run: sudo apt-get update && sude apt-get install -y ant
+            
+          - name: Build with Ant 
+            run: ant -f build.xml jar 
+            
+          - name: Run tests
+            run: ant -f build.xml test
