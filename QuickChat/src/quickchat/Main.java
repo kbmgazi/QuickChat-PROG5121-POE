@@ -4,6 +4,7 @@
  */
 package quickchat;
 
+
 /**
  *
  * @author Kea
@@ -15,6 +16,11 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        //Main myObj = new Main();
+        UserLogin myObj = new UserLogin();
+        
+        myObj.add(3, 3);
     }
     
 }
