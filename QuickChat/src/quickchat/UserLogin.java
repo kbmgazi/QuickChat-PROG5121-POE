@@ -41,7 +41,7 @@ public class UserLogin {
         char c;
         
         if (password.length() >= 8) {
-            for (int i = 0 ; i < password.length() - 1; i++) {
+            for (int i = 0 ; i < password.length(); i++) {
                 c = password.charAt(i);
                 if (Character.isUpperCase(c)) {
                     hasCapital = true;
@@ -61,7 +61,7 @@ public class UserLogin {
           boolean isValid = false;
           String zaCode = "\\+27\\d{9}";
           
-          if (cellPhoneNumber.length() <= 10 && cellPhoneNumber.matches(zaCode)) {
+          if (cellPhoneNumber.length() <= 12 && cellPhoneNumber.matches(zaCode)) {
               isValid = true;
           }
           return isValid;
@@ -80,22 +80,16 @@ public class UserLogin {
         cellPhoneNumberValid = checkCellPhone(cellPhoneNumber);
         
         //register user if username and password requirement are valid
-        if (usernameValid && passwordValid) {
+        if (usernameValid && passwordValid && cellPhoneNumberValid) {
             registeredFirstName = firstName;
             registeredLastName = lastName;
             registeredUsername = username;
             registeredPassword = password;
             registeredCellPhoneNumber = cellPhoneNumber;
-            
+    
             message = "User successfully registered";
-            //message = "";
-            
-            //cellphone 
-            if (cellPhoneNumberValid) {
-                message = "";
-            }
-            
-        }else{
+    
+        } else {
             if (!usernameValid) {
                 message = "Username is not correctly formatted, please ensure that your username contains an underscore and is no more than five characters in length. ";
             }
@@ -115,7 +109,7 @@ public class UserLogin {
         //declaration 
             boolean loginSuccess = false;
             
-            if (username == registeredUsername && password == registeredPassword) {
+            if (username.equals(registeredUsername) && password.equals(registeredPassword)) {
                 loginSuccess = true;
             }
             
@@ -128,9 +122,9 @@ public class UserLogin {
         String statusMessage;
         
         if (loginSuccess) {
-            statusMessage = "";
+            statusMessage = "Welcome " + firstName + ", " + lastName + ", it is great to see you again.";
         }else {
-            statusMessage = "";
+            statusMessage = "Username or password incorrect, please try again.";;
         }
     return statusMessage;
     }
