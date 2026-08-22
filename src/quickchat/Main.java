@@ -53,12 +53,16 @@ public class Main {
                 }else {
                     System.out.println("First Name:");
                     strFirstName = input.nextLine();
+                    
                     System.out.println("Last Name:");
                     strLastName = input.nextLine();
+                    
                     System.out.println("Username (max of 5 characters & must contain an underscore):");
                     strUsername = input.nextLine();
+                    
                     System.out.println("Password (min 8 characters, 1 capital, 1 number, 1 special character):");
                     strPassword = input.nextLine();
+                    
                     System.out.println("Cellphone Number:");
                     strCellPhoneNumber = input.nextLine();
                 
