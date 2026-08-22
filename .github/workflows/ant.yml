@@ -27,8 +27,11 @@ jobs:
           curl -L -o lib/junit-4.13.2.jar https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar
           curl -L -o lib/hamcrest-core-1.3.jar https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
 
-      - name: Build with Ant
-        run: ant -f build.xml -Dlibs.junit_4.classpath=lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar -Djavac.source=17 -Djavac.target=17 jar
-
-      - name: Run tests
-        run: ant -f build.xml -Dlibs.junit_4.classpath=lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar -Djavac.source=17 -Djavac.target=17 test
+      - name: Build and test with Ant
+        run: >
+          ant -f build.xml
+          -Dlibs.junit_4.classpath=lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar
+          -Djavac.source=17
+          -Djavac.target=17
+          -Djavac.release=17
+          clean test
