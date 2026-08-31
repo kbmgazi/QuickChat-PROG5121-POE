@@ -32,7 +32,8 @@ public class Main {
         final int OPTION_REGISTER = 1;
         final int OPTION_LOGIN = 2;
         final int OPTION_QUIT = 3;
-        
+
+        //user prompts
         System.out.println("Please select an option:");
         System.out.println("1. Register New Account");
         System.out.println("2. Log In");
@@ -51,6 +52,7 @@ public class Main {
                 if (bolRegistered) {
                     System.out.println("System Error: A user is already registered in this session.");
                 }else {
+                    //user prompts: Enter name, last name , username, password & cellphone 
                     System.out.println("First Name:");
                     strFirstName = input.nextLine();
                     System.out.println("Last Name:");
