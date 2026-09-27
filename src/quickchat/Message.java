@@ -47,5 +47,18 @@ public class Message {
         String lastWord;
         String combinedHash;
         String finalHash;
+        
+        firstTwoDigits = id.substring(0,2);
+        
+        firstWord ="";
+        lastWord = "";
+        
+        combinedHash = firstTwoDigits + ":" msgNum ":" + firstWord + lastWord ;
+        finalHash = combinedHash.toUpperCase();
+        
+        return finalHash;
+        
     }
+    
+    
 }
