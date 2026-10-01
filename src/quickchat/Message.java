@@ -60,5 +60,60 @@ public class Message {
         
     }
     
+    //method 4
+    public String sentMessage (int userChoice) {
+        String statusMessage ;
+        
+        if (userChoice == 1) {
+            messageStatus = "Sent";
+            totalMessageSent = totalMessageSent + 1;
+            
+            statusMessage = "Message successfully sent.";
+            
+        }else if (userChoice == 2) {
+            messageStatus = "Disregarded";
+            
+            statusMessage = "Message disregarded";
+        }else if (userChoice == 3) {
+            storeMessage();
+            statusMessage = "Message successfully stored";
+        }else {
+            statusMessage = "Invalid action selected.";
+        }
+        
+        return statusMessage;
+    }
+    
+    //method 5 
+    public String printMessage() {
+        String allMessages;
+        
+        if (sessionMassageCount = 0) {
+            allMessages = "No messages sent during this session ";
+        }else {
+            for (int i = 0; i < sessionMessageCount - 1; i++ ) {
+                allMessages = allMessages + sessionMessageList[i] + "\n---------------------\n";
+                
+            }
+        }
+        return allMessages;
+    }
+    
+    //method 6
+    public int returnTotalMessage(){
+        return totalMessageSent;
+    }
+    
+    //method 7
+    public boolean storeMessage(){
+        boolean saved = false;
+        // RESEARCH STEP REQUIRED:
+        // In Java, import external library (e.g., org.json or Gson) to format and write JSON:
+        // JSONObject msgJson = new JSONObject();
+        // msgJson.put("ID", messageID); msgJson.put("Recipient", recipientCell);
+        // Write msgJson to "messages.json" file.
+    }
+    
+    
     
 }
