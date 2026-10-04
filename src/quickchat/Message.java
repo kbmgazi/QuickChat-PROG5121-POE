@@ -8,6 +8,8 @@ package quickchat;
  *
  * @author Kea
  */
+import java.util.*;
+
 public class Message {
     //declarations
     private String messageID;
@@ -16,8 +18,8 @@ public class Message {
     private int messageNumber;
     private String messageHash;
     private String messageStatus;
-    private static int totalMessagesSent = 0;
-    private static list sessionMessageList;
+    private static int totalMessageSent = 0;
+    private static List<String> sessionMessageList = new ArrayList<>();
     
     //method 1
     public boolean checkMessageID(String id){
@@ -33,7 +35,7 @@ public class Message {
     public boolean checkRecipientCell(String cellNumber){
         boolean isValid = false;
         
-        if (cellNumber.length() <=10 && cellNumber.startsWith(+27)){
+        if (cellNumber.length() <=10 && cellNumber.startsWith("+27")){
             isValid = true;
         }
         
@@ -53,7 +55,7 @@ public class Message {
         firstWord ="";
         lastWord = "";
         
-        combinedHash = firstTwoDigits + ":" msgNum ":" + firstWord + lastWord ;
+        combinedHash = firstTwoDigits + ":" + msgNum + ":" + firstWord + lastWord ;
         finalHash = combinedHash.toUpperCase();
         
         return finalHash;
@@ -112,6 +114,7 @@ public class Message {
         // JSONObject msgJson = new JSONObject();
         // msgJson.put("ID", messageID); msgJson.put("Recipient", recipientCell);
         // Write msgJson to "messages.json" file.
+        return saved;
     }
     
     

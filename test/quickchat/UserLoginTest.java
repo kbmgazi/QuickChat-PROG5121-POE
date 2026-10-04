@@ -1,182 +1,175 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package quickchat;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/** Unit tests for UserLogin (Part 1). Uses the exact test data from the brief plus extra edge cases. */
 public class UserLoginTest {
 
-    public UserLoginTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    // ---- checkUserName ----
+    // ---- Brief test data: assertEquals ----
     @Test
-    public void testCheckUserName_Valid() {
-        UserLogin instance = new UserLogin();
-        assertTrue(instance.checkUserName("kb_23"));
+    public void testUsernameCorrectlyFormatted_Message() {
+        assertEquals("Username successfully captured.", new UserLogin().usernameMessage("kyl_1"));
     }
 
     @Test
-    public void testCheckUserName_NoUnderscore() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkUserName("kb123"));
+    public void testUsernameIncorrectlyFormatted_Message() {
+        assertEquals("Username is not correctly formatted; please ensure that your username contains "
+                + "an underscore and is no more than five characters in length.",
+                new UserLogin().usernameMessage("kyle!!!!!!!"));
     }
 
     @Test
-    public void testCheckUserName_TooLong() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkUserName("kb_2345"));
-    }
-
-    // ---- checkPasswordComplexity ----
-    @Test
-    public void testCheckPasswordComplexity_Valid() {
-        UserLogin instance = new UserLogin();
-        assertTrue(instance.checkPasswordComplexity("Ch@se123"));
+    public void testPasswordMeetsComplexity_Message() {
+        assertEquals("Password successfully captured.", new UserLogin().passwordMessage("Ch&&sec@ke99!"));
     }
 
     @Test
-    public void testCheckPasswordComplexity_TooShort() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkPasswordComplexity("Ch@1"));
+    public void testPasswordFailsComplexity_Message() {
+        assertEquals("Password is not correctly formatted; please ensure that the password contains "
+                + "at least eight characters, a capital letter, a number, and a special character.",
+                new UserLogin().passwordMessage("password"));
     }
 
     @Test
-    public void testCheckPasswordComplexity_NoSpecialChar() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkPasswordComplexity("Chase123"));
+    public void testCellPhoneCorrectlyFormatted_Message() {
+        assertEquals("Cell number successfully captured.", new UserLogin().cellPhoneMessage("+27838968976"));
     }
 
     @Test
-    public void testCheckPasswordComplexity_NoCapital() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkPasswordComplexity("ch@se123"));
+    public void testCellPhoneIncorrectlyFormatted_Message() {
+        assertEquals("Cell number is incorrectly formatted or does not contain an international code; "
+                + "please correct the number and try again.", new UserLogin().cellPhoneMessage("08966553"));
+    }
+
+    // ---- Brief test data: assertTrue / assertFalse ----
+    @Test
+    public void testUsernameCorrect_True() {
+        assertTrue(new UserLogin().checkUserName("kyl_1"));
     }
 
     @Test
-    public void testCheckPasswordComplexity_NoNumber() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkPasswordComplexity("Ch@seword"));
+    public void testUsernameIncorrect_False() {
+        assertFalse(new UserLogin().checkUserName("kyle!!!!!!!"));
     }
 
     @Test
-    public void testCheckPasswordComplexity_SpecialCharAtEnd() {
-        // regression test for the off-by-one loop bug
-        UserLogin instance = new UserLogin();
-        assertTrue(instance.checkPasswordComplexity("Chase12@"));
-    }
-
-    // ---- checkCellPhone ----
-    @Test
-    public void testCheckCellPhone_Valid() {
-        UserLogin instance = new UserLogin();
-        assertTrue(instance.checkCellPhone("+27838968976"));
+    public void testPasswordMeetsComplexity_True() {
+        assertTrue(new UserLogin().checkPasswordComplexity("Ch&&sec@ke99!"));
     }
 
     @Test
-    public void testCheckCellPhone_MissingCountryCode() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkCellPhone("0838968976"));
+    public void testPasswordFailsComplexity_False() {
+        assertFalse(new UserLogin().checkPasswordComplexity("password"));
     }
 
     @Test
-    public void testCheckCellPhone_TooLong() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkCellPhone("+2783896897654"));
+    public void testCellPhoneCorrect_True() {
+        assertTrue(new UserLogin().checkCellPhoneNumber("+27838968976"));
     }
 
     @Test
-    public void testCheckCellPhone_TooShort() {
-        UserLogin instance = new UserLogin();
-        assertFalse(instance.checkCellPhone("+2783"));
+    public void testCellPhoneIncorrect_False() {
+        assertFalse(new UserLogin().checkCellPhoneNumber("08966553"));
+    }
+
+    // ---- Extra edge cases ----
+    @Test
+    public void testUsernameNoUnderscore() {
+        assertFalse(new UserLogin().checkUserName("kb123"));
+    }
+
+    @Test
+    public void testUsernameTooLong() {
+        assertFalse(new UserLogin().checkUserName("kb_2345"));
+    }
+
+    @Test
+    public void testPasswordNoSpecialChar() {
+        assertFalse(new UserLogin().checkPasswordComplexity("Chase123"));
+    }
+
+    @Test
+    public void testPasswordNoCapital() {
+        assertFalse(new UserLogin().checkPasswordComplexity("ch@se123"));
+    }
+
+    @Test
+    public void testPasswordNoNumber() {
+        assertFalse(new UserLogin().checkPasswordComplexity("Ch@seword"));
+    }
+
+    @Test
+    public void testPasswordSpecialCharAtEnd() {
+        assertTrue(new UserLogin().checkPasswordComplexity("Chase12@"));
+    }
+
+    @Test
+    public void testCellPhoneTooLong() {
+        assertFalse(new UserLogin().checkCellPhoneNumber("+2783896897654"));
+    }
+
+    @Test
+    public void testCellPhoneTooShort() {
+        assertFalse(new UserLogin().checkCellPhoneNumber("+2783"));
     }
 
     // ---- registerUser ----
     @Test
     public void testRegisterUser_Success() {
-        UserLogin instance = new UserLogin();
-        String result = instance.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
-        assertEquals("User successfully registered", result);
+        assertEquals("User successfully registered",
+                new UserLogin().registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976"));
     }
 
     @Test
     public void testRegisterUser_InvalidUsername() {
-        UserLogin instance = new UserLogin();
-        String result = instance.registerUser("Keamo", "Mgazi", "kb23", "Ch@se123", "+27838968976");
-        assertTrue(result.contains("Username is not correctly formatted"));
+        assertEquals(UserLogin.USERNAME_BAD,
+                new UserLogin().registerUser("Keamo", "Mgazi", "kb23", "Ch@se123", "+27838968976"));
     }
 
     @Test
     public void testRegisterUser_InvalidPassword() {
-        UserLogin instance = new UserLogin();
-        String result = instance.registerUser("Keamo", "Mgazi", "kb_23", "weak", "+27838968976");
-        assertTrue(result.contains("Password is not correctly formatted"));
+        assertEquals(UserLogin.PASSWORD_BAD,
+                new UserLogin().registerUser("Keamo", "Mgazi", "kb_23", "weak", "+27838968976"));
     }
 
     @Test
     public void testRegisterUser_InvalidCellPhone() {
-        UserLogin instance = new UserLogin();
-        String result = instance.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "0838968976");
-        assertTrue(result.contains("Cell phone number is incorrectly formatted"));
+        assertEquals(UserLogin.CELL_BAD,
+                new UserLogin().registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "0838968976"));
     }
 
-    // ---- loginUser ----
+    // ---- loginUser / returnLoginStatus ----
     @Test
-    public void testLoginUser_Success() {
-        UserLogin instance = new UserLogin();
-        instance.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
-        assertTrue(instance.loginUser("kb_23", "Ch@se123"));
-    }
-
-    @Test
-    public void testLoginUser_WrongPassword() {
-        UserLogin instance = new UserLogin();
-        instance.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
-        assertFalse(instance.loginUser("kb_23", "wrongpass"));
+    public void testLoginSuccessful_True() {
+        UserLogin login = new UserLogin();
+        login.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
+        assertTrue(login.loginUser("kb_23", "Ch@se123"));
     }
 
     @Test
-    public void testLoginUser_WrongUsername() {
-        UserLogin instance = new UserLogin();
-        instance.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
-        assertFalse(instance.loginUser("kb_99", "Ch@se123"));
+    public void testLoginFailed_WrongPassword() {
+        UserLogin login = new UserLogin();
+        login.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
+        assertFalse(login.loginUser("kb_23", "wrongpass"));
     }
 
-    // ---- returnLoginStatus ----
+    @Test
+    public void testLoginFailed_WrongUsername() {
+        UserLogin login = new UserLogin();
+        login.registerUser("Keamo", "Mgazi", "kb_23", "Ch@se123", "+27838968976");
+        assertFalse(login.loginUser("kb_99", "Ch@se123"));
+    }
+
     @Test
     public void testReturnLoginStatus_Success() {
-        UserLogin instance = new UserLogin();
-        String result = instance.returnLoginStatus(true, "Keamo", "Mgazi");
-        assertEquals("Welcome Keamo, Mgazi, it is great to see you again.", result);
+        assertEquals("Welcome Keamo, Mgazi, it is great to see you again.",
+                new UserLogin().returnLoginStatus(true, "Keamo", "Mgazi"));
     }
 
     @Test
     public void testReturnLoginStatus_Failure() {
-        UserLogin instance = new UserLogin();
-        String result = instance.returnLoginStatus(false, "Keamo", "Mgazi");
-        assertEquals("Username or password incorrect, please try again.", result);
+        assertEquals("Username or password incorrect, please try again.",
+                new UserLogin().returnLoginStatus(false, "Keamo", "Mgazi"));
     }
 }

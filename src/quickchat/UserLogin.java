@@ -1,51 +1,56 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package quickchat;
 
 /**
+ * Login class: handles registration validation, login authentication
+ * and the status messages for QuickChat (Part 1).
  *
  * @author Kea
  */
-import quickchat.Main;
 public class UserLogin {
-    
-    //declarations
+
+    // ---- Messages required by the brief (kept as constants so Main and the tests reuse the exact text) ----
+    public static final String USERNAME_OK = "Username successfully captured.";
+    public static final String USERNAME_BAD = "Username is not correctly formatted; please ensure that your username "
+            + "contains an underscore and is no more than five characters in length.";
+    public static final String PASSWORD_OK = "Password successfully captured.";
+    public static final String PASSWORD_BAD = "Password is not correctly formatted; please ensure that the password "
+            + "contains at least eight characters, a capital letter, a number, and a special character.";
+    public static final String CELL_OK = "Cell number successfully captured.";
+    public static final String CELL_BAD = "Cell number is incorrectly formatted or does not contain an international "
+            + "code; please correct the number and try again.";
+    public static final String REGISTER_OK = "User successfully registered";
+    public static final String LOGIN_BAD = "Username or password incorrect, please try again.";
+
+    // Regex for a South African cell number: "+27" followed by exactly nine digits.
+    // Reference: Oracle (2024) java.util.regex.Pattern, Java SE API documentation,
+    // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html
+    // Country code format: ITU-T Recommendation E.164 (international public telecommunication numbering plan).
+    private static final String CELL_REGEX = "\\+27\\d{9}";
+
+    // Details stored when the user registers
     private String registeredUsername;
     private String registeredPassword;
     private String registeredFirstName;
     private String registeredLastName;
     private String registeredCellPhoneNumber;
-    
-    //username validation method 
+
+    /** Username must contain an underscore and be no more than five characters long. */
     public boolean checkUserName(String username) {
-        boolean hasUnderscore = false;
-        
-        if (username.length() <= 5) {
-            for (int i = 0; i < username.length(); i++) {
-                if (username.contains("_")) {
-                    hasUnderscore = true;
-                }
-            }
-        }
-        return hasUnderscore;
+        return username.length() <= 5 && username.contains("_");
     }
-    
-    //password complexity validation method 
+
+    /** Password: 8+ characters, a capital letter, a number and a special character. */
     public boolean checkPasswordComplexity(String password) {
-        //declaration 
         boolean hasCapital = false;
         boolean hasNumber = false;
         boolean hasSpecial = false;
-        char c;
-        
+
         if (password.length() >= 8) {
-            for (int i = 0 ; i < password.length(); i++) {
-                c = password.charAt(i);
+            for (int i = 0; i < password.length(); i++) {
+                char c = password.charAt(i);
                 if (Character.isUpperCase(c)) {
                     hasCapital = true;
-                }else if (Character.isDigit(c)) {
+                } else if (Character.isDigit(c)) {
                     hasNumber = true;
                 } else if (!Character.isLetterOrDigit(c) && c != ' ') {
                     hasSpecial = true;
@@ -54,80 +59,58 @@ public class UserLogin {
         }
         return hasCapital && hasNumber && hasSpecial;
     }
-    
-    //cell phone number validation method 
-    public boolean checkCellPhone(String cellPhoneNumber) {
-        //declaration 
-          boolean isValid = false;
-          String zaCode = "\\+27\\d{9}";
-          
-          if (cellPhoneNumber.length() <= 12 && cellPhoneNumber.matches(zaCode)) {
-              isValid = true;
-          }
-          return isValid;
+
+    /** Cell number must start with the international code (+27) followed by nine digits. */
+    public boolean checkCellPhoneNumber(String cellPhoneNumber) {
+        return cellPhoneNumber.matches(CELL_REGEX);
     }
-    
-    //user registration method 
-    public String registerUser(String firstName, String lastName, String username,String password, String cellPhoneNumber ) {
-        //declaration 
-        boolean usernameValid;
-        boolean passwordValid;
-        boolean cellPhoneNumberValid;
-        String message = null;
-        
-        usernameValid = checkUserName(username);
-        passwordValid = checkPasswordComplexity(password);
-        cellPhoneNumberValid = checkCellPhone(cellPhoneNumber);
-        
-        //register user if username and password requirement are valid
-        if (usernameValid && passwordValid && cellPhoneNumberValid) {
-            registeredFirstName = firstName;
-            registeredLastName = lastName;
-            registeredUsername = username;
-            registeredPassword = password;
-            registeredCellPhoneNumber = cellPhoneNumber;
-    
-            message = "User successfully registered";
-    
-        } else {
-            if (!usernameValid) {
-                message = "Username is not correctly formatted, please ensure that your username contains an underscore and is no more than five characters in length. ";
-            }
-            if (!passwordValid) {
-                message = "Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number, and a special character. ";
-            }
-            if (!cellPhoneNumberValid) {
-                message = "Cell phone number is incorrectly formatted or does not contain the international code.";
-            }
+
+    /** Capture message for the username (success or failure text). */
+    public String usernameMessage(String username) {
+        return checkUserName(username) ? USERNAME_OK : USERNAME_BAD;
+    }
+
+    /** Capture message for the password (success or failure text). */
+    public String passwordMessage(String password) {
+        return checkPasswordComplexity(password) ? PASSWORD_OK : PASSWORD_BAD;
+    }
+
+    /** Capture message for the cell number (success or failure text). */
+    public String cellPhoneMessage(String cellPhoneNumber) {
+        return checkCellPhoneNumber(cellPhoneNumber) ? CELL_OK : CELL_BAD;
+    }
+
+    /** Validates all details, stores them if valid and returns the registration message. */
+    public String registerUser(String firstName, String lastName, String username,
+                               String password, String cellPhoneNumber) {
+        if (!checkUserName(username)) {
+            return USERNAME_BAD;
         }
-        
-        return message;
+        if (!checkPasswordComplexity(password)) {
+            return PASSWORD_BAD;
+        }
+        if (!checkCellPhoneNumber(cellPhoneNumber)) {
+            return CELL_BAD;
+        }
+
+        registeredFirstName = firstName;
+        registeredLastName = lastName;
+        registeredUsername = username;
+        registeredPassword = password;
+        registeredCellPhoneNumber = cellPhoneNumber;
+        return REGISTER_OK;
     }
-    
-    //login authentication method 
-    public boolean loginUser(String username, String password){
-        //declaration 
-            boolean loginSuccess = false;
-            
-            if (username.equals(registeredUsername) && password.equals(registeredPassword)) {
-                loginSuccess = true;
-            }
-            
-     return loginSuccess;
+
+    /** True when the entered details match the details stored at registration. */
+    public boolean loginUser(String username, String password) {
+        return username.equals(registeredUsername) && password.equals(registeredPassword);
     }
-    
-    //authentication status reporter method
+
+    /** Returns the welcome message on success or the failure message otherwise. */
     public String returnLoginStatus(boolean loginSuccess, String firstName, String lastName) {
-        //declaration 
-        String statusMessage;
-        
         if (loginSuccess) {
-            statusMessage = "Welcome " + firstName + ", " + lastName + ", it is great to see you again.";
-        }else {
-            statusMessage = "Username or password incorrect, please try again.";;
+            return "Welcome " + firstName + ", " + lastName + ", it is great to see you again.";
         }
-    return statusMessage;
+        return LOGIN_BAD;
     }
-    
-    
 }
