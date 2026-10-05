@@ -9,6 +9,9 @@ package quickchat;
  * @author Kea
  */
 import java.util.Scanner;
+//part2 imports
+import java.util.Random;
+import java.util.Scanner;
 
 
 /**
@@ -105,6 +108,140 @@ public class Main {
         }
 
         System.out.println("Thank you for using QuickChat");
+        
+        //part 2
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+        
+        boolean isLoggedIn = true;
+        int menuChoice = 0;
+        menuChoice = scanner.nextInt();
+        
+        //print welcome message 
+        if (isLoggedIn) {
+            System.out.println("Welcome to QuickChat");
+        }
+        
+        do {
+            System.out.println("\n--- QuickChat Main Menu ---");
+            System.out.println("1) Send Messages");
+            System.out.println("2) Show recently sent messages");
+            System.out.println("3) Quit");
+            System.out.print("Enter your choice (1-3): ");
+            
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number (1-3).");
+                scanner.nextLine(); // Clear bad input
+                continue;  
+            }
+            
+            
+            scanner.nextLine(); // Clear newline buffer
+            
+            if (menuChoice == 1) {
+                if (!isLoggedIn) {
+                    System.out.println("Please log in first.");
+                }else {
+                    System.out.print("\nEnter the number of messages you wish to send: ");
+                    int numMessages = scanner.nextInt();
+                    scanner.nextLine(); // Clear buffer
+
+                    Message validator = new Message();
+                    
+                    //loop to process each message requests
+                    for (int i = 0; i < numMessages; i = i + 1) {
+                        System.out.println("Processing Message " + (i + 1) + " of " + numMessages);
+                        
+                        //recipienct input validation loop
+                        String recipient = "";
+                        boolean validRecipient = false;
+                        
+                        while (!validRecipient) {
+                            System.out.print("Enter recipient cell number (e.g., +27718693002): ");
+                            recipient = scanner.nextLine();
+                            
+                            if (validator.checkRecipientCell(recipient)) {
+                                System.out.println("Cell phone number successfully captured.");
+                                validRecipient = true;
+                            }else {
+                                System.out.println("Cell phone number is incorrectly formatted or does not contain an international code (+). Please try again.");
+                                
+                            }
+                        }
+                        
+                        //input message text validation
+                        String text = "";
+                        boolean validText = false;
+                        
+                        while (!validText) {
+                            System.out.print("Enter message text (max 250 characters): ");
+                            text = scanner.nextLine();
+                            
+                            String lengthStatus = validator.checkMessageLengthStatus(text);
+                            System.out.println(lengthStatus);
+                            
+                            if (text.length() <= 250) {
+                                 validText = true;
+                            }
+                        }
+                        
+                        //generate message ID 
+                        long rawRandomNum = (long) (random.nextDouble() * 10000000000L);
+                        String messageID = String.format("%010d", rawRandomNum);
+                        System.out.println("Message ID generated: " + messageID);
+                        
+                        // message object 
+                        Message msg = new Message(recipient, text);
+                        msg.setMessageID(messageID);
+                        msg.setMessageNumber(i);
+                        
+                        //generate message hash
+                        String hash = msg.createMessageHash(messageID, i, text);
+                        System.out.println("Message Hash: " + hash);
+                        
+                        // action selection 
+                        System.out.println("1) Send Message");
+                        System.out.println("2) Discard Message");
+                        System.out.println("3) Store Message to send later");
+                        System.out.print("Enter choice (1-3): ");
+                        int actionChoice = scanner.nextInt();
+                        scanner.nextLine(); // Clear buffer
+                        
+                        String actionResult = msg.sentMessage(actionChoice);
+                        System.out.println("Status: " + actionResult);
+                        
+                        //log sessions
+                         if (actionChoice == 1) {
+                            String logEntry = "Message ID: " + msg.getMessageID() +
+                                              "\nMessage Hash: " + msg.getMessageHash() +
+                                              "\nRecipient: " + msg.getRecipientCell() +
+                                              "\nMessage: " + msg.getMessageText();
+                            
+                            Message.addSessionLog(logEntry);
+                         }
+                         
+                         //print message summary 
+                        System.out.println("\n--- Message Summary ---");
+                        System.out.println("Message ID: " + msg.getMessageID());
+                        System.out.println("Message Hash: " + msg.getMessageHash());
+                        System.out.println("Recipient: " + msg.getRecipientCell());
+                        System.out.println("Message: " + msg.getMessageText());
+                        
+                    }
+                }
+            }else if (menuChoice == 2){
+                System.out.println("Recently Sent Messages");
+                System.out.println(Message.printMessages);
+                    
+            }else if (menuChoice == 3) {
+                System.out.println("\nQuitting QuickChat. Goodbye!");
+                System.out.println("Total messages sent during session: " + Message.returnTotalMessages());
+            }else {
+                System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+            }
+        }while (menuChoice != 3);
+        
+        scanner.close();
     }
 
     /** Shows the menu and returns a validated integer choice. */
