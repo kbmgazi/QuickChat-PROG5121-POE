@@ -1,5 +1,5 @@
 [
-{  "messageID": "",  "recipientCell": "+27718693002",  "messageNumber": 0,  "messageHash": "",  "messageText": "Store this message",  "messageStatus": "Stored"},
+{  "messageID": "",  "recipientCell": "+27718693002",  "messageNumber": 0,  "messageHash": "",  "messageText": "Store this message",  "messageStatus": "Stored"},{  "messageID": "0012345678",  "recipientCell": "+27718693002",  "messageNumber": 0,  "messageHash": "00:0:TESTMESSAGE",  "messageText": "Test store message",  "messageStatus": ""},{  "messageID": "",  "recipientCell": "+27718693002",  "messageNumber": 0,  "messageHash": "",  "messageText": "Store this message",  "messageStatus": "Stored"},
 {
   "messageID": "0012345678",
   "recipientCell": "+27718693002",
