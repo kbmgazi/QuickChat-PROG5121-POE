@@ -256,7 +256,7 @@ public class Main {
         input.close();
     }
 
-    /** Shows the auth menu and returns a validated integer choice. */
+    //Shows the auth menu and returns a validated integer choice.
     private static int readMenuChoice(Scanner input) {
         System.out.println("\nPlease select an option:");
         System.out.println("1. Register New Account");
