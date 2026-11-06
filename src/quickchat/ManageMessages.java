@@ -275,5 +275,93 @@ public class ManageMessages {
         return output;
     }
     
+    // f) full report.
+    public String buildReport(String status) {
+        String wanted = cleanStatus(status);
+        StringBuilder report = new StringBuilder();
+        int found = 0;
+ 
+        report.append("===== ").append(wanted.toUpperCase()).append(" MESSAGES REPORT =====\n");
+ 
+        for (int i = 0; i < totalCount; i++) {
+            if (hasStatus(i, wanted)) {
+                found++;
+                report.append("Message ID: ").append(messageIDs[i]).append("\n")
+                      .append("Message Hash: ").append(messageHashes[i]).append("\n")
+                      .append("Recipient: ").append(recipients[i]).append("\n")
+                      .append("Message: ").append(messageTexts[i]).append("\n")
+                      .append("---------------------\n");
+            }
+        }
+ 
+        if (found == 0) {
+            report.append("No messages found.\n");
+        }
+        return report.toString().trim();
+    }
+ 
+    // One-line count of each type, shown when the user quits
+    public String buildSummary() {
+        return "Sent: " + sentCount + " | Disregarded: " + disregardedCount + " | Stored: " + storedCount;
+    }
+    
+   
+    // Getters
+    public String[] getSentMessages() { return trimmedCopy(sentMessages, sentCount); }
+    public String[] getDisregardedMessages() { return trimmedCopy(disregardedMessages, disregardedCount); }
+    public String[] getStoredMessages() { return trimmedCopy(storedMessages, storedCount); }
+    public String[] getMessageHashes() { return trimmedCopy(messageHashes, totalCount); }
+    public String[] getMessageIDs() { return trimmedCopy(messageIDs, totalCount); }
+    public int getTotalCount() { return totalCount; }
+    
+    // Private helpers
+    private boolean hasStatus(int index, String status) {
+        return messageStatuses[index].equals(status);
+    }
+ 
+    private String cleanStatus(String status) {
+        String result = "";
+ 
+        if (status != null) {
+            String lower = status.trim().toLowerCase();
+            if (lower.equals("sent")) {
+                result = STATUS_SENT;
+            } else if (lower.startsWith("disregard")) {
+                result = STATUS_DISREGARDED;
+            } else if (lower.equals("stored")) {
+                result = STATUS_STORED;
+            }
+        }
+        return result;
+    }
+    
+    // Removes the first matching text from a category array and gives back the new count
+    private int removeText(String[] array, int count, String text) {
+        int position = -1;
+        int newCount = count;
+ 
+        for (int i = 0; i < count && position == -1; i++) {
+            if (array[i].equals(text)) {
+                position = i;
+            }
+        }
+ 
+        if (position != -1) {
+            for (int i = position; i < count - 1; i++) {
+                array[i] = array[i + 1];
+            }
+            array[count - 1] = null;
+            newCount = count - 1;
+        }
+        return newCount;
+    }
+ 
+    private String[] trimmedCopy(String[] source, int count) {
+        String[] copy = new String[count];
+        for (int i = 0; i < count; i++) {
+            copy[i] = source[i];
+        }
+        return copy;
+    }
     
 }
