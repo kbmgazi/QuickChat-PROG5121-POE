@@ -2,9 +2,9 @@ name: Java CI with Ant
 
 on:
   push:
-    branches: [ "main", "part_2_message_functionality" ]
+    branches: [ "**" ]
   pull_request:
-    branches: [ "main", "part_2_message_functionality" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -26,14 +26,24 @@ jobs:
       - name: Download JUnit 4 Jars
         run: |
           mkdir -p lib
-          curl -L -o lib/junit-4.13.2.jar https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar
-          curl -L -o lib/hamcrest-core-1.3.jar https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+          curl -fL -o lib/junit-4.13.2.jar https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar
+          curl -fL -o lib/hamcrest-core-1.3.jar https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
 
       - name: Build and Test with Ant
-        run: >
-          ant -f build.xml
-          -Dlibs.junit_4.classpath=lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar
-          -Djavac.source=17
-          -Djavac.target=17
-          -Djavac.release=17
-          clean test
+        shell: bash
+        run: |
+          ant -f build.xml \
+            -Dlibs.junit_4.classpath=lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar \
+            -Djavac.source=17 \
+            -Djavac.target=17 \
+            -Djavac.release=17 \
+            clean test 2>&1 | tee ant-output.txt
+
+      - name: Fail the run if any test failed
+        shell: bash
+        run: |
+          if grep -qE "Failures: [1-9]|Errors: [1-9]|FAILED" ant-output.txt; then
+            echo "One or more unit tests failed."
+            exit 1
+          fi
+          echo "All unit tests passed."
