@@ -132,10 +132,10 @@ public class Main {
                 System.out.println("2) Show recently sent messages");
                 System.out.println("3) Quit");
                 System.out.println("4) Stored Messages");
-                System.out.print("Enter your choice (1-3): ");
+                System.out.print("Enter your choice (1-4): ");
 
                 if (!input.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number (1-3).");
+                    System.out.println("Invalid input. Please enter a number (1-4).");
                     input.nextLine(); // Clear invalid input
                     continue;
                 }
@@ -257,7 +257,7 @@ public class Main {
                     showStoredMessagesMenu(input, manager);
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                    System.out.println("Invalid choice. Please enter 1, 2, 3, or 4.");
                 }
 
             } while (menuChoice != 3);
@@ -328,6 +328,8 @@ public class Main {
                 // Update messages.json so the delete is still there next time the app runs
                 manager.saveStoredMessages(JSON_FILE);
             } else if (choice == 6) {
+                System.out.println(manager.buildReport("Sent"));
+                System.out.println();
                 System.out.println(manager.buildReport("Stored"));
             } else if (choice == 7) {
                 System.out.println("Returning to main menu...");

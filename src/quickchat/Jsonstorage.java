@@ -12,6 +12,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+
+/*
+ * Code Attribution:
+ * File reading/writing is based on the Oracle Java Documentation
+ * (java.io.File, java.io.FileWriter, java.util.Scanner and the String methods
+ * indexOf/substring). The JSON layout follows RFC 8259.
+ */
 public class Jsonstorage {
     
     // Reads the whole file into one String. Gives back "" if the file isn't there yet.
