@@ -270,7 +270,12 @@ public class ManageMessages {
             messageTexts[totalCount] = null;
             messageStatuses[totalCount] = null;
  
-            output = "Message: \"" + deletedText + "\" successfully deleted.";
+            String shownText = deletedText;
+            if (shownText.endsWith(".")) {
+                    shownText = shownText.substring(0, shownText.length() - 1);
+             }
+            
+            output = "Message: \"" + shownText + "\" successfully deleted.";
         }
         return output;
     }

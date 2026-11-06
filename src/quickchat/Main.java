@@ -122,11 +122,16 @@ public class Main {
             String messageText = "";
             Message validator = new Message(recipientCell,messageText);
 
+            // Part 3: set up the arrays and load any messages stored in messages.json
+            ManageMessages manager = new ManageMessages(strFirstName + " " + strLastName);
+            manager.loadStoredMessages("messages.json");
+
             do {
                 System.out.println("\n--- QuickChat Main Menu ---");
                 System.out.println("1) Send Messages");
                 System.out.println("2) Show recently sent messages");
                 System.out.println("3) Quit");
+                System.out.println("4) Stored Messages");
                 System.out.print("Enter your choice (1-3): ");
 
                 if (!input.hasNextInt()) {
@@ -217,6 +222,10 @@ public class Main {
                         String actionResult = msg.sentMessage(actionChoice);
                         System.out.println("Status: " + actionResult);
 
+                        // Part 3: add the message to the arrays (sent, disregarded or stored)
+                        manager.addMessage(msg.getMessageID(), msg.getMessageHash(),
+                                msg.getRecipientCell(), msg.getMessageText(), msg.getMessageStatus());
+
                         // Log to session history if sent (Option 1)
                         if (actionChoice == 1) {
                             String logEntry = "Message ID: " + msg.getMessageID() +
@@ -242,6 +251,10 @@ public class Main {
                 } else if (menuChoice == 3) {
                     System.out.println("\nQuitting QuickChat. Goodbye!");
                     System.out.println("Total messages sent during session: " + Message.returnTotalMessages());
+                    System.out.println("Message summary - " + manager.buildSummary());
+
+                } else if (menuChoice == 4) {
+                    showStoredMessagesMenu(input, manager);
 
                 } else {
                     System.out.println("Invalid choice. Please enter 1, 2, or 3.");
@@ -271,5 +284,56 @@ public class Main {
         int choice = input.nextInt();
         input.nextLine(); // Clear buffer
         return choice;
+    }
+
+    //Part 3: Stored Messages submenu (features a to f from the brief)
+    private static void showStoredMessagesMenu(Scanner input, ManageMessages manager) {
+        final String JSON_FILE = "messages.json";
+        int choice = 0;
+
+        while (choice != 7) {
+            System.out.println("\n--- Stored Messages ---");
+            System.out.println("1) Display sender and recipient of all stored messages");
+            System.out.println("2) Display the longest stored message");
+            System.out.println("3) Search for a message ID");
+            System.out.println("4) Search all messages for a recipient");
+            System.out.println("5) Delete a message using its hash");
+            System.out.println("6) Display report of all stored messages");
+            System.out.println("7) Back to main menu");
+            System.out.print("Enter your choice (1-7): ");
+
+            while (!input.hasNextInt()) {
+                System.out.println("Invalid input. Enter a number (1-7):");
+                input.next();
+            }
+            choice = input.nextInt();
+            input.nextLine(); // Clear buffer
+
+            if (choice == 1) {
+                System.out.println(manager.displaySenderAndRecipient());
+            } else if (choice == 2) {
+                System.out.println("Longest stored message: " + manager.findLongestStoredMessage());
+            } else if (choice == 3) {
+                System.out.print("Enter the message ID: ");
+                String searchID = input.nextLine().trim();
+                System.out.println(manager.searchByMessageID(searchID));
+            } else if (choice == 4) {
+                System.out.print("Enter the recipient cell number: ");
+                String searchRecipient = input.nextLine().trim();
+                System.out.println(manager.searchByRecipient(searchRecipient));
+            } else if (choice == 5) {
+                System.out.print("Enter the message hash to delete: ");
+                String deleteHash = input.nextLine().trim();
+                System.out.println(manager.deleteByHash(deleteHash));
+                // Update messages.json so the delete is still there next time the app runs
+                manager.saveStoredMessages(JSON_FILE);
+            } else if (choice == 6) {
+                System.out.println(manager.buildReport("Stored"));
+            } else if (choice == 7) {
+                System.out.println("Returning to main menu...");
+            } else {
+                System.out.println("Invalid choice. Please enter a number from 1 to 7.");
+            }
+        }
     }
 }
